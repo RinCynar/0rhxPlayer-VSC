@@ -4,7 +4,7 @@
 
 > 仓库：https://github.com/RinCynar/0rhxPlayer ｜ 当前版本：**1.0.1**
 
-![0rhxPlayer](pic.png)
+![0rhxPlayer](https://github.com/RinCynar/0rhxPlayer/blob/main/pic.png?raw=true)
 
 ## 视图
 
