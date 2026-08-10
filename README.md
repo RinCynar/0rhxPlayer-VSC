@@ -2,7 +2,9 @@
 
 **0rhxPlayer**（扩展 ID：`rincynar.0rhxplayer`）是一个 **100% 本地** 的 VSCode 音乐播放器，**不发起任何网络请求**：无登录、无账号、无歌单广场、无电台、无评论、无排行榜、无在线搜索。
 
-> 仓库：https://github.com/RinCynar/0rhxPlayer ｜ 当前版本：**1.0.0**
+> 仓库：https://github.com/RinCynar/0rhxPlayer ｜ 当前版本：**1.0.1**
+
+![0rhxPlayer](pic.png)
 
 ## 视图
 
@@ -56,9 +58,9 @@
 
 ## 安装
 
-1. 下载 `release-1.0.0.vsix`
+1. 下载 `release-1.0.1.vsix`
 2. 在 VSCode / VSCodium 中执行 `Extensions: Install from VSIX...` 选择该文件
-3. 或命令行安装：`code --install-extension release-1.0.0.vsix`
+3. 或命令行安装：`code --install-extension release-1.0.1.vsix`
 
 ## 构建（开发环境）
 

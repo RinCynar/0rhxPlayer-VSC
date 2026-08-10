@@ -1,7 +1,8 @@
 import { BUTTON_MANAGER } from "../manager/index.js";
-import { ArtworkViewProvider, IPC } from "./index.js";
+import { ArtworkViewProvider, IPC, LyricViewProvider } from "./index.js";
 import { LYRIC_KEY, QUEUE_INIT, REPEAT_KEY, SHOW_LYRIC_KEY } from "../constant/index.js";
 import { LocalFileTreeItem, QueueProvider } from "../treeview/index.js";
+import type { LocalFileTreeItemData } from "../treeview/index.js";
 import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
 import type { QueueContent } from "../treeview/index.js";
@@ -129,6 +130,32 @@ class State {
           return IPC.retain();
       }
     } else void this.#downInit();
+  }
+
+  /**
+   * Restore the current playing file after an extension reload / workspace switch.
+   * The shared server keeps playing, so we only re-attach the views (artwork, lyric, status bar).
+   */
+  restoreCurrent(data: {
+    url: string;
+    item: NeteaseTypings.SongsItem;
+    pos: number;
+    playing: boolean;
+    lyric: NeteaseTypings.LyricData & { delay: number; idx: number };
+  }): void {
+    if (data.url) {
+      const item = LocalFileTreeItem.new(<LocalFileTreeItemData>{ ...data.item, abspath: data.url, itemType: "l" });
+      this.#setPlayItem(item);
+      BUTTON_MANAGER.buttonSong(item);
+      BUTTON_MANAGER.buttonPlay(data.playing);
+    }
+
+    const lyric = { ...data.lyric, type: LyricType.ori };
+    this.#lyric = lyric;
+    const idx = data.lyric.idx ?? 0;
+    BUTTON_MANAGER.buttonLyric(data.lyric.text?.[idx]?.[LyricType.ori]);
+    LyricViewProvider.lyric(data.lyric);
+    LyricViewProvider.index(idx);
   }
 
   #setPlayItem(value?: QueueContent) {

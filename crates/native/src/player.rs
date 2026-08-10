@@ -73,6 +73,7 @@ pub struct Player {
     volume: f32,
     status: Status,
     sink: Option<Sink>,
+    current_url: Option<String>,
     #[allow(dead_code)]
     stream: OutputStream,
     handle: OutputStreamHandle,
@@ -112,6 +113,7 @@ impl Player {
             volume: 0.,
             status: Status::new(),
             sink: None,
+            current_url: None,
             stream,
             handle,
         }
@@ -119,7 +121,7 @@ impl Player {
 
     #[inline]
     fn load(&mut self, url: String, play: bool) -> bool {
-        let file = match File::open(url) {
+        let file = match File::open(&url) {
             Ok(f) => f,
             _ => return false,
         };
@@ -130,6 +132,7 @@ impl Player {
         };
 
         self.stop();
+        self.current_url = Some(url);
 
         let sink = match Sink::try_new(&self.handle) {
             Ok(sink) => sink,
@@ -209,9 +212,45 @@ impl Player {
 
     #[inline]
     fn seek(&mut self, offset: f64) {
-        if let Some(ref sink) = self.sink {
-            if let Ok(pos) = Duration::try_from_secs_f64(self.position() + offset) {
-                if let Ok(_) = sink.try_seek(pos) {
+        let target = self.position() + offset;
+        let target = if target < 0.0 { 0.0 } else { target };
+        if let Ok(pos) = Duration::try_from_secs_f64(target) {
+            // Try the fast in-place seek (works for MP3/WAV and most FLAC).
+            let seeked = self
+                .sink
+                .as_ref()
+                .map(|sink| sink.try_seek(pos).is_ok())
+                .unwrap_or(false);
+            if seeked {
+                self.status.seek(pos);
+            } else {
+                // Fallback: reload the file and skip to the target position.
+                // Some formats (e.g. certain FLAC files) cannot seek in-place.
+                self.reload_and_seek(pos);
+            }
+        }
+    }
+
+    /// Reload the current file and skip to `pos`, used when `Sink::try_seek` fails.
+    fn reload_and_seek(&mut self, pos: Duration) {
+        let url = match self.current_url.clone() {
+            Some(u) => u,
+            None => return,
+        };
+        let was_playing = !self.sink.as_ref().map(|s| s.is_paused()).unwrap_or(true);
+
+        if let Ok(file) = File::open(&url) {
+            if let Ok(source) = Decoder::new(BufReader::new(file)) {
+                if let Ok(sink) = Sink::try_new(&self.handle) {
+                    sink.set_speed(self.speed as f32);
+                    sink.set_volume(self.volume);
+                    sink.append(source.skip_duration(pos));
+                    if was_playing {
+                        sink.play();
+                    } else {
+                        sink.pause();
+                    }
+                    self.sink = Some(sink);
                     self.status.seek(pos);
                 }
             }

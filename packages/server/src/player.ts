@@ -60,7 +60,16 @@ abstract class PlayerBase {
 
   #playing = false;
 
+  #current?: { url: string; item: NeteaseTypings.SongsItem };
+
   protected abstract readonly _getPath: (id: number, name: string) => Promise<string>;
+
+  /** Current playing file info, used to restore the views after an extension reload. */
+  get current(): { url: string; item: NeteaseTypings.SongsItem; pos: number; playing: boolean } | undefined {
+    const cur = this.#current;
+    if (!cur) return;
+    return { ...cur, pos: this.lastPos, playing: this.playing };
+  }
 
   get playing() {
     return this.#playing;
@@ -81,6 +90,7 @@ abstract class PlayerBase {
     try {
       const path = data.url ? data.url : await this._getPath(data.item.id, data.item.name);
       this.#loadtime = loadtime;
+      this.#current = data.url ? { url: data.url, item: data.item } : undefined;
       this._load(path, data.play, data.item, data.seek);
     } catch (err) {
       logError(err);

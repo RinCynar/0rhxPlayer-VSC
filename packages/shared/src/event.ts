@@ -3,6 +3,7 @@ export const enum IPCControl {
   master = "104",
   new = "107",
   retain = "108",
+  current = "109",
 }
 
 // 2xx

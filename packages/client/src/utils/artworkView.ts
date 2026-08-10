@@ -60,13 +60,20 @@ const html = `<!DOCTYPE html>
 export class ArtworkViewProvider implements WebviewViewProvider {
   private static _view?: WebviewView;
 
+  private static _last?: string;
+
   resolveWebviewView(view: WebviewView): void {
     view.webview.options = { enableScripts: true };
     view.webview.html = html;
     ArtworkViewProvider._view = view;
+    // Replay the last artwork if the view is created after playback was restored.
+    if (ArtworkViewProvider._last) {
+      view.webview.postMessage({ command: "artwork", dataUrl: ArtworkViewProvider._last });
+    }
   }
 
   static artwork(dataUrl?: string): void {
+    ArtworkViewProvider._last = dataUrl;
     ArtworkViewProvider._view?.webview.postMessage({ command: "artwork", dataUrl });
   }
 }

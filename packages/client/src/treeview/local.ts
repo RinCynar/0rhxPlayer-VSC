@@ -17,7 +17,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
 
   private static _instance: LocalProvider;
 
-  private static readonly _files = new Map<LocalLibraryTreeItem, LocalFileTreeItem[]>();
+  private static readonly _files = new Map<string, LocalFileTreeItem[]>();
 
   private static _actions = new WeakMap<
     LocalLibraryTreeItem,
@@ -50,6 +50,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
   static deleteFolder(path: string): string[] | undefined {
     if (this._folders.has(path)) {
       this._folders.delete(path);
+      this._files.delete(path);
       this.refresh();
       return [...this._folders];
     }
@@ -60,60 +61,47 @@ export class LocalProvider implements TreeDataProvider<Content> {
     this._instance._onDidChangeTreeData.fire();
   }
 
+  static get folders(): readonly string[] {
+    return [...this._folders];
+  }
+
   /** All scanned songs across every library folder. */
   static get allFiles(): readonly LocalFileTreeItem[] {
     return [...this._files.values()].flat();
   }
 
-  static async refreshLibrary(element: LocalLibraryTreeItem, hard?: boolean): Promise<readonly PlayTreeItemData[]> {
-    if (hard) this._files.delete(element);
-    const old = this._actions.get(element);
-    old?.reject();
-    return new Promise((resolve, reject) => {
-      this._actions.set(element, { resolve, reject });
-      this._instance._onDidChangeTreeData.fire(element);
-      void this._instance.view.reveal(element, { expand: true });
-    });
+  /** Scan every library folder (including the default cache dir) so the Songs view is populated. */
+  static async scanAll(): Promise<void> {
+    const roots = [MUSIC_CACHE_DIR, ...this._folders];
+    await Promise.allSettled(roots.map((folder) => this._scan(folder)));
+    this.refresh();
   }
 
-  getTreeItem(element: LocalFileTreeItem | LocalLibraryTreeItem): LocalFileTreeItem | LocalLibraryTreeItem {
-    return element;
-  }
-
-  async getChildren(element?: LocalLibraryTreeItem): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
-    if (!element) return [MUSIC_CACHE_DIR, ...LocalProvider._folders].map((folder) => new LocalLibraryTreeItem(folder));
-
-    const action = LocalProvider._actions.get(element);
-    LocalProvider._actions.delete(element);
-
-    let items: LocalFileTreeItem[] = [];
-    if (LocalProvider._files.has(element)) {
-      items = LocalProvider._files.get(element) ?? [];
-      action?.resolve(items.map(({ data }) => data));
-      return items;
-    }
-
-    const folders: string[] = [element.label];
+  /** Scan a single folder and cache the results by folder path. */
+  private static async _scan(folder: string): Promise<LocalFileTreeItem[]> {
+    if (this._files.has(folder)) return this._files.get(folder) ?? [];
+    const items: LocalFileTreeItem[] = [];
+    const folders: string[] = [folder];
     try {
       while (folders.length) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const folder = folders.pop()!;
-        const dirents = await readdir(folder, { withFileTypes: true });
+        const dir = folders.pop()!;
+        const dirents = await readdir(dir, { withFileTypes: true });
         const paths: string[] = [];
 
         for (const dirent of dirents) {
-          if (dirent.isFile()) paths.push(dirent.name);
-          else if (dirent.isDirectory()) folders.push(resolve(folder, dirent.name));
+          if (dirent.isDirectory()) folders.push(resolve(dir, dirent.name));
+          else if (dirent.isFile() && /\.(?:flac|mp3|m4a|aac|wav)$/i.test(dirent.name))
+            paths.push(resolve(dir, dirent.name));
         }
 
-        const promises = paths.map(async (filename) => {
-          const abspath = resolve(folder, filename);
+        const promises = paths.map(async (abspath) => {
           const meta = await parseFile(abspath, { duration: true, skipCovers: true });
-          return { filename, abspath, meta };
+          return { abspath, meta };
         });
 
         (await Promise.allSettled(promises))
-          .reduce<{ filename: string; abspath: string; meta: IAudioMetadata }[]>((acc, res) => {
+          .reduce<{ abspath: string; meta: IAudioMetadata }[]>((acc, res) => {
             if (
               res.status === "fulfilled" &&
               res.value.meta.format.container &&
@@ -124,7 +112,9 @@ export class LocalProvider implements TreeDataProvider<Content> {
             }
             return acc;
           }, [])
-          .forEach(({ filename, abspath, meta: { common, format } }) => {
+          .forEach(({ abspath, meta: { common, format } }) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const filename = abspath.split(/[\\/]/).pop()!;
             const item = {
               filename,
               abspath,
@@ -144,15 +134,40 @@ export class LocalProvider implements TreeDataProvider<Content> {
           });
       }
     } catch {}
-    LocalProvider._files.set(element, items);
+    this._files.set(folder, items);
+    return items;
+  }
 
+  static async refreshLibrary(element: LocalLibraryTreeItem, hard?: boolean): Promise<readonly PlayTreeItemData[]> {
+    if (hard) this._files.delete(element.label);
+    const old = this._actions.get(element);
+    old?.reject();
+    return new Promise((resolve, reject) => {
+      this._actions.set(element, { resolve, reject });
+      this._instance._onDidChangeTreeData.fire(element);
+      void this._instance.view.reveal(element, { expand: true });
+    });
+  }
+
+  getTreeItem(element: LocalFileTreeItem | LocalLibraryTreeItem): LocalFileTreeItem | LocalLibraryTreeItem {
+    return element;
+  }
+
+  async getChildren(element?: LocalLibraryTreeItem): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
+    if (!element) return [MUSIC_CACHE_DIR, ...LocalProvider._folders].map((folder) => new LocalLibraryTreeItem(folder));
+
+    const action = LocalProvider._actions.get(element);
+    LocalProvider._actions.delete(element);
+
+    const items = await LocalProvider._scan(element.label);
     action?.resolve(items.map(({ data }) => data));
     return items;
   }
 
   getParent(element: Content): undefined | LocalLibraryTreeItem {
     if (element instanceof LocalLibraryTreeItem) return;
-    for (const [library, files] of LocalProvider._files) if (files.includes(element)) return library;
+    for (const [library, files] of LocalProvider._files)
+      if (files.includes(element)) return new LocalLibraryTreeItem(library);
     throw Error(`{element.data.filename} not found`);
   }
 }
@@ -168,6 +183,7 @@ export class LocalLibraryTreeItem extends TreeItem {
 
   constructor(label: string) {
     super(label, TreeItemCollapsibleState.Collapsed);
+    this.id = label;
     this.tooltip = label;
   }
 }
@@ -194,6 +210,7 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
 
   private constructor(readonly data: LocalFileTreeItemData) {
     super(data.filename, TreeItemCollapsibleState.None);
+    this.id = data.abspath;
 
     this.description = data.ar.map(({ name }) => name).join("/");
     this.tooltip = data.al.name;

@@ -46,6 +46,8 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case IPCControl.retain:
         QueueProvider.new(<readonly PlayTreeItemData[]>data.items);
         return STATE.downInit(data.play, data.seek); // queue ready (3/3)
+      case IPCControl.current:
+        return STATE.restoreCurrent(data);
       case IPCPlayer.end:
         if (!data.fail && (STATE.repeat || data.reloadNseek)) IPC.load(!data.pause, data.reloadNseek);
         else void commands.executeCommand("0rhxplayer.next");

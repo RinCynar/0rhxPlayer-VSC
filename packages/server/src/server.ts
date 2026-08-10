@@ -34,7 +34,7 @@ class IPCServer {
     } catch {} // named pipes on Windows may report spurious errors
 
     // Watch the parent VS Code process: when it exits and no client remains,
-    // stop playback and leave, so music never keeps playing in the background.
+    // begin the shutdown so music never keeps playing in the background.
     const parentPid = parseInt(<string>process.env["CM_PARENT_PID"], 10);
     if (parentPid > 0) {
       setInterval(() => {
@@ -42,12 +42,9 @@ class IPCServer {
         try {
           process.kill(parentPid, 0);
         } catch {
-          PLAYER.stop();
-          this.stop();
-          IPC_BCST_SRV.stop();
-          process.exit(0);
+          this.#suspend();
         }
-      }, 3000);
+      }, 1500);
     }
 
     this.#server = createServer((socket) => {
@@ -79,6 +76,8 @@ class IPCServer {
 
       this._setMaster();
 
+      this.#sendCurrent(socket);
+
       if (this.#sockets.size === 1) {
         if (this.#first) this.#first = false;
         else this.#resume(socket);
@@ -107,6 +106,13 @@ class IPCServer {
     socket.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
 
+  /** Push the current playing file to a (re)connecting client so views can be restored. */
+  #sendCurrent(socket: Socket): void {
+    const current = PLAYER.current;
+    if (!current) return;
+    this.send(socket, { t: IPCControl.current, ...current, lyric: { ...STATE.lyric } });
+  }
+
   sendToMaster(data: IPCServerMsg): void {
     this.#master?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
@@ -129,14 +135,20 @@ class IPCServer {
   }
 
   #suspend(): void {
+    // Idempotent: only one shutdown timer at a time.
+    if (this.#timer) return;
     this.#retainState = PLAYER.playing;
+    // Pause immediately so audio stops as soon as the last window disconnects,
+    // then keep the process alive for a while so a reloading window can reconnect
+    // and resume playback (the player position is preserved across pause).
     PLAYER.pause();
     this.#timer = setTimeout(() => {
       if (this.#sockets.size) return;
+      PLAYER.stop();
       this.stop();
       IPC_BCST_SRV.stop();
       void writeFile(RETAIN_FILE, JSON.stringify(this.#retain)).finally(() => process.exit());
-    }, 40000);
+    }, 20000);
   }
 
   #handler(data: IPCClientMsg, socket: Socket): void {

@@ -36,22 +36,33 @@ const html = `<!DOCTYPE html>
 
       function render() {
         container.innerHTML = "";
-        if (!texts.length) {
+        // Skip placeholder lines ("~") so no ghost lyric row is shown.
+        const visible = [];
+        const indexMap = [];
+        for (let i = 0; i < texts.length; i++) {
+          const line = texts[i];
+          if (line && line[0] && line[0] !== "~") {
+            indexMap.push(i);
+            visible.push(line);
+          }
+        }
+        if (!visible.length) {
           const empty = document.createElement("div");
           empty.className = "empty";
           empty.textContent = "No synchronized lyric";
           container.appendChild(empty);
           return;
         }
+        const cur = indexMap.indexOf(current);
         const frag = document.createDocumentFragment();
-        for (let i = 0; i < texts.length; i++) {
+        for (let i = 0; i < visible.length; i++) {
           const div = document.createElement("div");
-          div.className = "line" + (i === current ? " active" : "");
+          div.className = "line" + (i === cur ? " active" : "");
           const ori = document.createElement("span");
           ori.className = "ori";
-          ori.textContent = texts[i][0] || "";
+          ori.textContent = visible[i][0] || "";
           div.appendChild(ori);
-          const tra = texts[i][1];
+          const tra = visible[i][1];
           if (tra) {
             const t = document.createElement("span");
             t.className = "tra";
@@ -61,7 +72,7 @@ const html = `<!DOCTYPE html>
           frag.appendChild(div);
         }
         container.appendChild(frag);
-        const active = container.children[current];
+        const active = container.children[cur];
         if (active) {
           if (firstRender) {
             active.scrollIntoView({ block: "center" });
@@ -96,17 +107,28 @@ const html = `<!DOCTYPE html>
 export class LyricViewProvider implements WebviewViewProvider {
   private static _view?: WebviewView;
 
+  private static _last?: NeteaseTypings.LyricData;
+
+  private static _lastIdx = 0;
+
   resolveWebviewView(view: WebviewView): void {
     view.webview.options = { enableScripts: true };
     view.webview.html = html;
     LyricViewProvider._view = view;
+    // The view may be created after the playback state was restored: replay it.
+    if (LyricViewProvider._last) {
+      view.webview.postMessage({ command: "lyric", lyric: LyricViewProvider._last });
+      view.webview.postMessage({ command: "index", idx: LyricViewProvider._lastIdx });
+    }
   }
 
   static lyric(lyric: NeteaseTypings.LyricData): void {
+    LyricViewProvider._last = lyric;
     LyricViewProvider._view?.webview.postMessage({ command: "lyric", lyric });
   }
 
   static index(idx: number): void {
+    LyricViewProvider._lastIdx = idx;
     LyricViewProvider._view?.webview.postMessage({ command: "index", idx });
   }
 }

@@ -20,5 +20,5 @@ export async function realActivate(context: ExtensionContext) {
   initCommand(context);
   initStatusBar(context);
   await initIPC(context);
-  initLocal(context);
+  await initLocal(context);
 }

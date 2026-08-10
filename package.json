@@ -2,7 +2,7 @@
   "name": "0rhxplayer",
   "displayName": "0rhxPlayer",
   "description": "0rhxPlayer - local music player for VS Code",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "RinCynar",
   "private": true,
   "preview": false,
@@ -179,6 +179,16 @@
         "command": "0rhxplayer.songPlay",
         "icon": "$(play)",
         "title": "%commands.songPlay.title%"
+      },
+      {
+        "command": "0rhxplayer.searchSongs",
+        "icon": "$(search)",
+        "title": "%commands.searchSongs.title%"
+      },
+      {
+        "command": "0rhxplayer.clearSongSearch",
+        "icon": "$(close)",
+        "title": "%commands.clearSongSearch.title%"
       }
     ],
     "configuration": [
@@ -355,6 +365,16 @@
           "command": "0rhxplayer.randomQueue",
           "group": "navigation",
           "when": "view == 0rhxplayer-queue"
+        },
+        {
+          "command": "0rhxplayer.searchSongs",
+          "when": "view == 0rhxplayer-songs",
+          "group": "navigation"
+        },
+        {
+          "command": "0rhxplayer.clearSongSearch",
+          "when": "view == 0rhxplayer-songs && 0rhxplayer.songSearching",
+          "group": "navigation"
         }
       ]
     },

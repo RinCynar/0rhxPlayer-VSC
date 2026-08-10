@@ -55,6 +55,8 @@
   "commands.sortQueue.title": "排序",
   "commands.songPlay.title": "播放",
   "commands.speed.title": "播放速度",
+  "commands.searchSongs.title": "搜索",
+  "commands.clearSongSearch.title": "清除搜索",
   "commands.toggle.title": "播放",
   "commands.toggleButton.title": "按鈕切換",
   "commands.unsubRadio.title": "取消收藏",

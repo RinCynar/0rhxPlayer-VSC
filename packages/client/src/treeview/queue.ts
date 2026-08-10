@@ -177,6 +177,7 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
 
   constructor(readonly data: QueueItemTreeItemData) {
     super(`${data.name}${data.alia[0] ? ` (${data.alia.join("/")})` : ""}`);
+    this.id = String(data.id);
 
     this.description = data.ar.map(({ name }) => name).join("/");
     this.tooltip = data.al.name;

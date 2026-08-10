@@ -37,6 +37,16 @@ export type IPCServerMsg =
   | IPCMsg<IPCControl.master, { is?: true }>
   | IPCMsg<IPCControl.new>
   | IPCMsg<IPCControl.retain, { items: readonly unknown[]; play?: boolean; seek?: number }>
+  | IPCMsg<
+      IPCControl.current,
+      {
+        url: string;
+        item: NeteaseTypings.SongsItem;
+        pos: number;
+        playing: boolean;
+        lyric: NeteaseTypings.LyricData & { delay: number; idx: number };
+      }
+    >
   | IPCMsg<IPCPlayer.end, { fail?: true; pause?: boolean; reloadNseek?: number }>
   | IPCMsg<IPCPlayer.loaded>
   | IPCMsg<IPCPlayer.lyric, { lyric: NeteaseTypings.LyricData }>

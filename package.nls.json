@@ -55,6 +55,8 @@
   "commands.sortQueue.title": "Sort",
   "commands.songPlay.title": "Play",
   "commands.speed.title": "Speed",
+  "commands.searchSongs.title": "Search",
+  "commands.clearSongSearch.title": "Clear search",
   "commands.toggle.title": "Play",
   "commands.toggleButton.title": "Toggle button",
   "commands.unsubRadio.title": "Unsubscribe",
