@@ -1,0 +1,11 @@
+import type { NeteaseTypings } from "api";
+
+export const STATE = {
+  lyric: <NeteaseTypings.LyricData & { delay: number; idx: number }>{
+    delay: -1.0,
+    idx: 0,
+    time: [0],
+    text: [["~", "~", "~"]],
+    user: [],
+  },
+};

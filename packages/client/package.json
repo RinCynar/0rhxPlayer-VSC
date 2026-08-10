@@ -1,0 +1,22 @@
+{
+  "name": "@0rhxplayer/client",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "check": "tsc -p tsconfig.json",
+    "lint": "eslint src/**"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@types/api": "workspace:*",
+    "@types/lodash": "4.17.4",
+    "@types/node": "*",
+    "@types/vscode": "1.74.0"
+  },
+  "dependencies": {
+    "@0rhxplayer/server": "workspace:*",
+    "@0rhxplayer/shared": "workspace:*",
+    "lodash": "4.17.21",
+    "music-metadata": "8.2.0"
+  }
+}

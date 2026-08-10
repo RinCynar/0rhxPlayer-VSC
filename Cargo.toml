@@ -1,0 +1,12 @@
+[workspace]
+members = ["crates/native"]
+default-members = ["crates/native"]
+resolver =  "2"
+
+[patch.crates-io]
+symphonia = { git = "https://github.com/pdeljanov/Symphonia", rev = "4f41954d" }
+cpal = { git = "https://github.com/sidit77/cpal", rev = "66ed6be" }
+
+[profile.release]
+codegen-units = 1
+lto = true

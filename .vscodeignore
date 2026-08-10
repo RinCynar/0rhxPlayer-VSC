@@ -1,0 +1,58 @@
+.vscode-test
+**/*.map
+node_modules
+
+# yarn
+.yarn
+.pnp.*
+.yarnrc.yml
+yarn-error.log
+yarn.lock
+
+# configuration
+.cargo
+.github
+**/gulpfile.js
+**/renovate.json
+**/webpack.config.js
+**/.gitignore
+**/.editorconfig
+**/tsconfig.json
+**/.eslintrc.*
+**/.browserslistrc
+**/postcss.config.*
+**/tailwind.config.*
+Cargo.*
+docker/
+Cross.toml
+deno.json
+
+## editors
+.vim
+.vscode
+
+# source code
+scripts
+packages
+crates
+*.rs
+
+# cache and build file
+.cache
+.artifact
+out
+**/*.vsix
+target
+index.node
+
+# document
+doc
+vsc-extension-quickstart.md
+media/icon.svg
+media/icon-72.png
+media/icon-150.png
+**/*.LICENSE.txt
+
+# scratch
+*.log
+deno.lock

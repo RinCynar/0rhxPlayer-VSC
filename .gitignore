@@ -1,0 +1,24 @@
+.vscode-test/
+node_modules
+.DS_Store
+
+# yarn
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+yarn-error.log
+
+# native module
+target
+index.node
+
+# cache and build file
+.cache
+.artifact
+build
+out
+dist
+**/*.vsix

@@ -1,0 +1,19 @@
+{
+  "name": "@0rhxplayer/server",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "type": "module",
+  "scripts": {
+    "check": "tsc -p tsconfig.json",
+    "lint": "eslint src/**"
+  },
+  "devDependencies": {
+    "@types/api": "workspace:*",
+    "@types/node": "*"
+  },
+  "dependencies": {
+    "@0rhxplayer/shared": "workspace:*",
+    "music-metadata": "8.2.0"
+  }
+}

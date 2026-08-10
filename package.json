@@ -1,0 +1,456 @@
+{
+  "name": "0rhxplayer",
+  "displayName": "0rhxPlayer",
+  "description": "0rhxPlayer - local music player for VS Code",
+  "version": "1.0.0",
+  "publisher": "RinCynar",
+  "private": true,
+  "preview": false,
+  "workspaces": [
+    "packages/*",
+    "packages/@types/*"
+  ],
+  "engines": {
+    "vscode": "^1.67.0"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "categories": [
+    "Other"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": false,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RinCynar/0rhxPlayer"
+  },
+  "keywords": [
+    "音乐",
+    "music",
+    "player",
+    "local",
+    "0rhxplayer"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "icon": "media/icon.png",
+  "main": "./dist/extension.js",
+  "targets": {
+    "main": false
+  },
+  "contributes": {
+    "commands": [
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.seekbackward",
+        "title": "%commands.seekbackward.title%"
+      },
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.seekforward",
+        "title": "%commands.seekforward.title%"
+      },
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.previous",
+        "title": "%commands.previous.title%"
+      },
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.next",
+        "title": "%commands.next.title%"
+      },
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.toggle",
+        "title": "%commands.toggle.title%"
+      },
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.repeat",
+        "title": "%commands.repeat.title%"
+      },
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.volume",
+        "title": "%commands.volume.title%"
+      },
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.speed",
+        "title": "%commands.speed.title%"
+      },
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.toggleButton",
+        "title": "%commands.toggleButton.title%"
+      },
+      {
+        "category": "0rhxPlayer",
+        "command": "0rhxplayer.openLogFile",
+        "title": "%commands.openLogFile.title%"
+      },
+      {
+        "command": "0rhxplayer.newLocalLibrary",
+        "icon": "$(add)",
+        "title": "%commands.newLocalLibrary.title%"
+      },
+      {
+        "command": "0rhxplayer.refreshLocalLibrary",
+        "icon": "$(refresh)",
+        "title": "%commands.refreshLocalLibrary.title%"
+      },
+      {
+        "command": "0rhxplayer.deleteLocalLibrary",
+        "title": "%commands.deleteLocalLibrary.title%"
+      },
+      {
+        "command": "0rhxplayer.openLocalLibrary",
+        "title": "%commands.openLocalLibrary.title%"
+      },
+      {
+        "command": "0rhxplayer.playLocalLibrary",
+        "icon": "$(play)",
+        "title": "%commands.playLocalLibrary.title%"
+      },
+      {
+        "command": "0rhxplayer.addLocalLibrary",
+        "icon": "$(add)",
+        "title": "%commands.addLocalLibrary.title%"
+      },
+      {
+        "command": "0rhxplayer.refreshLocalFile",
+        "icon": "$(refresh)",
+        "title": "%commands.refreshLocalFile.title%"
+      },
+      {
+        "command": "0rhxplayer.addLocalFile",
+        "icon": "$(add)",
+        "title": "%commands.addLocalFile.title%"
+      },
+      {
+        "command": "0rhxplayer.playLocalFile",
+        "icon": "$(play)",
+        "title": "%commands.playLocalFile.title%"
+      },
+      {
+        "command": "0rhxplayer.sortQueue",
+        "icon": "$(ungroup-by-ref-type)",
+        "title": "%commands.sortQueue.title%"
+      },
+      {
+        "command": "0rhxplayer.clearQueue",
+        "icon": "$(clear-all)",
+        "title": "%commands.clearQueue.title%"
+      },
+      {
+        "command": "0rhxplayer.randomQueue",
+        "icon": "$(sort-precedence)",
+        "title": "%commands.randomQueue.title%"
+      },
+      {
+        "command": "0rhxplayer.playSong",
+        "icon": "$(play)",
+        "title": "%commands.playSong.title%"
+      },
+      {
+        "command": "0rhxplayer.deleteSong",
+        "icon": "$(remove)",
+        "title": "%commands.deleteSong.title%"
+      },
+      {
+        "command": "0rhxplayer.playNext",
+        "icon": "$(arrow-up)",
+        "title": "%commands.playNext.title%"
+      },
+      {
+        "command": "0rhxplayer.lyric",
+        "title": "%commands.lyric.title%"
+      },
+      {
+        "command": "0rhxplayer.songPlay",
+        "icon": "$(play)",
+        "title": "%commands.songPlay.title%"
+      }
+    ],
+    "configuration": [
+      {
+        "properties": {
+          "0rhxplayer.cache.path": {
+            "default": null,
+            "markdownDescription": "%configuration.cache.path.markdownDescription%",
+            "format": "uri",
+            "scope": "window",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "0rhxplayer.host.autoStart": {
+            "default": false,
+            "markdownDescription": "%configuration.host.autoStart.markdownDescription%",
+            "scope": "window",
+            "type": "boolean"
+          },
+          "0rhxplayer.queue.initialization": {
+            "default": "none",
+            "enum": [
+              "none",
+              "restore"
+            ],
+            "scope": "window",
+            "type": "string"
+          }
+        },
+        "title": "0rhxPlayer"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "0rhxplayer.newLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.refreshLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.deleteLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.openLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.playLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.addLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.refreshLocalFile",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.addLocalFile",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.playLocalFile",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.sortQueue",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.clearQueue",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.randomQueue",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.playSong",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.deleteSong",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.playNext",
+          "when": "false"
+        },
+        {
+          "command": "0rhxplayer.lyric",
+          "when": "false"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "0rhxplayer.refreshLocalFile",
+          "group": "inline",
+          "when": "view == 0rhxplayer-local && viewItem == LocalLibraryTreeItem"
+        },
+        {
+          "command": "0rhxplayer.deleteLocalLibrary",
+          "when": "view == 0rhxplayer-local && viewItem == LocalLibraryTreeItem"
+        },
+        {
+          "command": "0rhxplayer.openLocalLibrary",
+          "when": "view == 0rhxplayer-local && viewItem == LocalLibraryTreeItem"
+        },
+        {
+          "command": "0rhxplayer.playLocalLibrary",
+          "group": "inline",
+          "when": "view == 0rhxplayer-local && viewItem == LocalLibraryTreeItem"
+        },
+        {
+          "command": "0rhxplayer.addLocalLibrary",
+          "group": "inline",
+          "when": "view == 0rhxplayer-local && viewItem == LocalLibraryTreeItem"
+        },
+        {
+          "command": "0rhxplayer.addLocalFile",
+          "group": "inline",
+          "when": "view == 0rhxplayer-local && viewItem == LocalFileTreeItem"
+        },
+        {
+          "command": "0rhxplayer.playLocalFile",
+          "group": "inline",
+          "when": "view == 0rhxplayer-local && viewItem == LocalFileTreeItem"
+        },
+        {
+          "command": "0rhxplayer.playSong",
+          "group": "inline",
+          "when": "view == 0rhxplayer-queue && viewItem == QueueItemTreeItem || view == 0rhxplayer-queue && viewItem == LocalFileTreeItem || view == 0rhxplayer-queue && viewItem == ProgramTreeItem"
+        },
+        {
+          "command": "0rhxplayer.deleteSong",
+          "group": "inline",
+          "when": "view == 0rhxplayer-queue && viewItem == QueueItemTreeItem || view == 0rhxplayer-queue && viewItem == LocalFileTreeItem || view == 0rhxplayer-queue && viewItem == ProgramTreeItem"
+        },
+        {
+          "command": "0rhxplayer.playNext",
+          "group": "inline",
+          "when": "viewItem == QueueItemTreeItem || viewItem == LocalFileTreeItem || viewItem == ProgramTreeItem"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "0rhxplayer.newLocalLibrary",
+          "group": "navigation",
+          "when": "view == 0rhxplayer-local"
+        },
+        {
+          "command": "0rhxplayer.refreshLocalLibrary",
+          "group": "navigation",
+          "when": "view == 0rhxplayer-local"
+        },
+        {
+          "command": "0rhxplayer.sortQueue",
+          "group": "navigation",
+          "when": "view == 0rhxplayer-queue"
+        },
+        {
+          "command": "0rhxplayer.clearQueue",
+          "group": "navigation",
+          "when": "view == 0rhxplayer-queue"
+        },
+        {
+          "command": "0rhxplayer.randomQueue",
+          "group": "navigation",
+          "when": "view == 0rhxplayer-queue"
+        }
+      ]
+    },
+    "views": {
+      "0rhxplayer": [
+        {
+          "id": "0rhxplayer-songs",
+          "name": "%views.0rhxplayer-songs.name%"
+        },
+        {
+          "id": "0rhxplayer-artwork",
+          "name": "%views.0rhxplayer-artwork.name%",
+          "type": "webview"
+        },
+        {
+          "id": "0rhxplayer-lyric",
+          "name": "%views.0rhxplayer-lyric.name%",
+          "type": "webview"
+        },
+        {
+          "id": "0rhxplayer-queue",
+          "name": "%views.0rhxplayer-queue.name%"
+        },
+        {
+          "id": "0rhxplayer-local",
+          "name": "%views.0rhxplayer-local.name%"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "icon": "media/disc.svg",
+          "id": "0rhxplayer",
+          "title": "%viewsContainers.activitybar.title%"
+        }
+      ]
+    },
+    "walkthroughs": [
+      {
+        "id": "0rhxplayer",
+        "title": "0rhxPlayer",
+        "description": "0rhxPlayer - local music player for VS Code",
+        "steps": [
+          {
+            "id": "statusBar",
+            "title": "Status Bar",
+            "description": "This step will help you set up status bar.",
+            "media": {
+              "markdown": "media/walkthroughs/statusBar.md"
+            }
+          },
+          {
+            "id": "queue",
+            "title": "Queue",
+            "description": "This step will help you know how to use queue.",
+            "media": {
+              "markdown": "media/walkthroughs/queue.md"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "resolutions": {
+    "@types/node": "16.18.8",
+    "buffer": "latest",
+    "buffer-from": "latest",
+    "debug": "latest",
+    "isarray": "latest",
+    "loose-envify": "latest",
+    "object-assign": "latest"
+  },
+  "scripts": {
+    "build": "deno run --allow-all scripts/build.mts --prod",
+    "build-dev": "deno run --allow-all scripts/build.mts",
+    "check": "yarn workspaces foreach --all -p run check",
+    "lint": "yarn workspaces foreach --all -p run lint"
+  },
+  "devDependencies": {
+    "@types/eslint": "8.56.10",
+    "@types/http-cache-semantics": "4.0.4",
+    "@typescript-eslint/eslint-plugin": "7.11.0",
+    "@typescript-eslint/parser": "7.11.0",
+    "debug": "4.3.4",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "8.10.0",
+    "eslint-plugin-prettier": "5.1.3",
+    "eslint-plugin-react": "7.34.2",
+    "eslint-plugin-react-hooks": "4.6.2",
+    "postcss": "8.4.38",
+    "prettier": "3.2.5",
+    "supports-color": "9.4.0",
+    "tailwindcss": "3.4.3",
+    "typescript": "5.4.5"
+  },
+  "packageManager": "yarn@4.2.2",
+  "author": "RinCynar"
+}
