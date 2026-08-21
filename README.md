@@ -2,7 +2,9 @@
 
 **0rhxPlayer**（扩展 ID：`rincynar.0rhxplayer`）是一个 **100% 本地** 的 VSCode 音乐播放器，**不发起任何网络请求**：无登录、无账号、无歌单广场、无电台、无评论、无排行榜、无在线搜索。
 
-> 仓库：https://github.com/RinCynar/0rhxPlayer ｜ 当前版本：**1.0.1**
+> 🌐 **官方主页**：[0rhxplayer.rincynar.top](https://0rhxplayer.rincynar.top)  
+> 📦 **VS Code 插件仓库**：[0rhxPlayer](https://github.com/RinCynar/0rhxPlayer)  
+> 🖥️ **Desktop 桌面端仓库**：[0rhxPlayer-desktop](https://github.com/RinCynar/0rhxPlayer-desktop)
 
 ![0rhxPlayer](https://github.com/RinCynar/0rhxPlayer/blob/main/pic.png?raw=true)
 
@@ -58,9 +60,17 @@
 
 ## 安装
 
-1. 下载 `release-1.0.1.vsix`
+1. 前往官网 [0rhxplayer.rincynar.top](https://0rhxplayer.rincynar.top) 或 GitHub Releases 下载 `release-1.0.1.vsix`
 2. 在 VSCode / VSCodium 中执行 `Extensions: Install from VSIX...` 选择该文件
 3. 或命令行安装：`code --install-extension release-1.0.1.vsix`
+4. 也可以在 [VisualStudio Marketplace](https://marketplace.visualstudio.com/items?itemName=RinCynar.0rhxplayer)直接安装
+
+## 多端支持与相关项目
+
+- **0rhxPlayer (VS Code 扩展)**：当前仓库，集成于 VS Code / VSCodium 的本地轻量音乐播放器。
+- **0rhxPlayer Desktop (桌面端)**：独立的桌面客户端版本，脱离编辑器独立运行。
+  - 🌐 **官网主页**：[0rhxplayer.rincynar.top](https://0rhxplayer.rincynar.top)
+  - 🖥️ **GitHub 仓库**：[0rhxPlayer-desktop](https://github.com/RinCynar/0rhxPlayer-desktop)
 
 ## 构建（开发环境）
 
