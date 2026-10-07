@@ -39,7 +39,18 @@ jobs:
           cp index.node ../../build/win32-x64.node
 
       - name: Build bundle
-        run: deno run --allow-all scripts/build.mts --prod
+        shell: bash
+        run: |
+          set -o pipefail
+          deno run --allow-all scripts/build.mts --prod 2>&1 | tee bundle.log
+
+      - name: Report bundle failure
+        if: failure()
+        shell: bash
+        run: |
+          tail -n 15 bundle.log 2>/dev/null | while IFS= read -r line; do
+            echo "::error title=BundleLog::$line"
+          done
 
       - name: Package VSIX
         shell: bash
