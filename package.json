@@ -2,7 +2,7 @@
   "name": "0rhxplayer",
   "displayName": "0rhxPlayer",
   "description": "0rhxPlayer - local music player for VS Code",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "RinCynar",
   "private": true,
   "preview": false,
@@ -29,7 +29,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/RinCynar/0rhxPlayer"
+    "url": "https://github.com/RinCynar/0rhxPlayer-VSC"
   },
   "keywords": [
     "音乐",

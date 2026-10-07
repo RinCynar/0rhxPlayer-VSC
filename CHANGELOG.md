@@ -1,5 +1,20 @@
 # Change Log
 
+## [1.0.2] - 2026-10-07
+
+### Added
+- **CI 发布流程**：推送 tag 后由 GitHub Actions 自动完成 Rust native 编译、bundle 构建与 VSIX 打包，并创建 GitHub Release
+
+### Changed
+- **仓库更名为 [0rhxPlayer-VSC](https://github.com/RinCynar/0rhxPlayer-VSC)**：为桌面端 / Android 端项目让出主仓名；同步更新 `package.json` repository、README 链接与 git remote（GitHub 对旧地址自动重定向，旧链接仍可访问）
+- **Native 模块重新构建**：此前 `build/win32-x64.node` 落后于 `player.rs` 的最后一次修改，现基于最新源码重新编译，1.0.2 VSIX 携带与源码一致的 native 二进制
+- Native crate 版本号与扩展版本对齐（1.0.2）
+
+### Fixed
+- **README 安装说明版本号**：更新为 `release-1.0.2.vsix`
+
+---
+
 ## [1.0.1] - 2026-08-10
 
 ### Added
