@@ -113,7 +113,8 @@
             "npm:@types/node@*",
             "npm:@types/vscode@1.74.0",
             "npm:lodash@4.17.21",
-            "npm:music-metadata@8.2.0"
+            "npm:music-metadata@8.2.0",
+            "npm:typescript@5.4.5"
           ]
         }
       },
@@ -121,7 +122,8 @@
         "packageJson": {
           "dependencies": [
             "npm:@types/node@*",
-            "npm:music-metadata@8.2.0"
+            "npm:music-metadata@8.2.0",
+            "npm:typescript@5.4.5"
           ]
         }
       }

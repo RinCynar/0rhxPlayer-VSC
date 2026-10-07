@@ -10,7 +10,8 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/node": "*"
+    "@types/node": "*",
+    "typescript": "5.4.5"
   },
   "dependencies": {
     "@0rhxplayer/shared": "workspace:*",

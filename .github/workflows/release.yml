@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Install dependencies
+        run: node .yarn/releases/yarn-4.2.2.cjs install
+
+      - name: Build native module
+        shell: bash
+        run: |
+          cd crates/native
+          cargo build --release --target x86_64-pc-windows-msvc
+          cp index.node ../../build/win32-x64.node
+
+      - name: Build bundle
+        run: deno run --allow-all scripts/build.mts --prod
+
+      - name: Package VSIX
+        shell: bash
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          npx --yes @vscode/vsce package --no-dependencies -o "release-${VERSION}.vsix"
+          echo "VSIX=release-${VERSION}.vsix" >> "$GITHUB_ENV"
+
+      - name: Upload artifact (manual run)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vsix
+          path: release-*.vsix
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.VSIX }}
+          fail_on_unmatched_files: true
+          generate_release_notes: true

@@ -39,6 +39,7 @@ __metadata:
     "@types/vscode": "npm:1.74.0"
     lodash: "npm:4.17.21"
     music-metadata: "npm:8.2.0"
+    typescript: "npm:5.4.5"
   languageName: unknown
   linkType: soft
 
@@ -50,6 +51,7 @@ __metadata:
     "@types/api": "workspace:*"
     "@types/node": "npm:*"
     music-metadata: "npm:8.2.0"
+    typescript: "npm:5.4.5"
   languageName: unknown
   linkType: soft
 
